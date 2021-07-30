@@ -1,19 +1,17 @@
 package testcases;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.Select;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import pageobjects.FourthPage;
+import pageobjects.HomePage;
+import pageobjects.SecondPage;
+import pageobjects.ThirdPage;
 
 public class FirstTest {
 	
@@ -26,66 +24,113 @@ public String url = "https://www.phptravels.net/home";
 		
 		WebDriverManager.chromedriver().setup();
 		driver = new ChromeDriver();
-		driver.get(url);
+        JavascriptExecutor js = (JavascriptExecutor) driver;
 		driver.manage().window().maximize();
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-		driver.findElement(By.xpath("//a[normalize-space()='Tours']")).click();
-	
-		driver.findElements(By.xpath("//span[@class=\"select2-chosen\"]")).get(5).click();
-		Thread.sleep(1000);
-
-		WebElement lwb = driver.findElement(By.xpath("//span[@class='select2-match']"));
-		Select options = new Select(lwb);
-		options.selectByVisibleText("Legoland Malaysia Day Pass");
+		driver.get(url);
+		
+		
+		HomePage homepage = new HomePage(driver);
+		homepage.gotoTour();
+		homepage.selectTourDestination();
+		homepage.selectTourtype();
+		homepage.setDate();
+		homepage.selectNoOfPeple();
+		homepage.clickSearch();
+		
+		
+		SecondPage secondpage = new SecondPage(driver);
+		js.executeScript("window.scrollBy(0,4500)");
+	    secondpage.initiateBooking();
+	    
+	    
+	    ThirdPage thirdpage = new ThirdPage(driver);
+		js.executeScript("window.scrollBy(0,500)");
+	    thirdpage.enterUserInfo();
+//	    thirdpage.enterGuestInfo();
+		js.executeScript("window.scrollBy(0,1500)");
+	    thirdpage.confirmBooking();
+	    
+	    
+	    FourthPage fourthpage = new FourthPage(driver);
+	    fourthpage.confirmPayOnArrial();
+	    fourthpage.AttemptSignup();
+		js.executeScript("window.scrollBy(0,200)");
+		fourthpage.completeSignUp();
+	    fourthpage.newsletterSubscription();
+		
+		
 		
 
-		driver.findElement(By.id("tourtype_chosen")).click();
-		Thread.sleep(1000);
-		WebElement opt = driver.findElement(By.xpath("//li[@class='active-result']"));
-		Select select = new Select(opt);
-		select.selectByVisibleText("Yacht");
-		
-		driver.findElement(By.xpath("//form[@action='https://www.phptravels.net/tours/search']//input[@id='DateTours']")).clear();
-		driver.findElement(By.xpath("//form[@action='https://www.phptravels.net/tours/search']//input[@id='DateTours']")).sendKeys("09/07/2021");
-		driver.findElement(By.xpath("//form[contains(@action,'https://www.phptravels.net/tours/search')]//button[@type='button'][normalize-space()='+']")).click();
-		driver.findElement(By.xpath("//form[@action='https://www.phptravels.net/tours/search']//button[@type='submit'][normalize-space()='Search']")).click();
-		driver.findElement(By.xpath("//button[contains(text(),'Book Now')]")).click();
-		driver.findElements(By.xpath("//ul[@class='chosen-results']/li[@class='active-result']")).get(2).click();
-				
-//		driver.findElements(By.xpath("//span[contains(text(),'Search by Hotel or City Name')]")).get(0).click();
-		
-		driver.findElement(By.xpath("//span[normalize-space()='First Name']")).sendKeys("Mohammad");
-		driver.findElement(By.xpath("//span[normalize-space()='Last Name']")).sendKeys("Islam");
-		driver.findElement(By.xpath("//div[@class='col-md-6 col-12 o2']//span[contains(text(),'Email')]")).sendKeys("mmislam020409@gmail.com");
-		driver.findElement(By.xpath("//span[normalize-space()='Confirm']")).sendKeys("mmislam020409@gmail.com");
-		driver.findElement(By.xpath("//span[normalize-space()='Contact Number']")).sendKeys("01717237725");
-		driver.findElement(By.xpath("//span[normalize-space()='Address']")).sendKeys("Adress");
-		driver.findElement(By.xpath("//span[normalize-space()='Select Country']")).click();
-		driver.findElement(By.xpath("//input[@class='chosen-search-input']")).sendKeys("Bangladesh");
+//		driver.findElement(By.xpath("//a[normalize-space()='Tours']")).click();	
+//		driver.findElements(By.xpath("//span[@class=\"select2-chosen\"]")).get(5).click();
+//		driver.findElement(By.xpath("//div[contains(text(),'Legoland Malaysia Day Pass')]")).click();
+//		driver.findElement(By.id("tourtype_chosen")).click();
+//		driver.findElement(By.xpath("//li[contains(text(),'Yacht')]")).click();
+//     	driver.findElement(By.xpath("//form[@action='https://www.phptravels.net/tours/search']//input[@id='DateTours']")).click();
+//     	
+//     	String valMonthYear = driver.findElement(By.xpath("//div[@class='datepicker -bottom-left- -from-bottom- active']//div[@class='datepicker--nav-title']")).getText();
+//     	String month = valMonthYear.split(",")[0].trim();
+//     	String year = valMonthYear.split(",")[1].trim();   	
+//
+//     	while (!(month.equals("September") && year.equals("2021"))) {
+//     		driver.findElement(By.xpath("//div[@class='datepicker -bottom-left- -from-bottom- active']//nav[@class='datepicker--nav']//div[3]//*[local-name()='svg']")).click();
+//         		valMonthYear = driver.findElement(By.xpath("//div[@class='datepicker -bottom-left- -from-bottom- active']//div[@class='datepicker--nav-title']")).getText();
+//         		month = valMonthYear.split(",")[0].trim();
+//         		year = valMonthYear.split(",")[1].trim();
+//		}   	
+//     	driver.findElement(By.xpath("//div[8]/div/div/div/div[10]")).click();
+//		driver.findElement(By.xpath("//form[contains(@action,'https://www.phptravels.net/tours/search')]//button[@type='button'][normalize-space()='+']")).click();
+//		driver.findElement(By.xpath("//form[@action='https://www.phptravels.net/tours/search']//button[@type='submit'][normalize-space()='Search']")).click();
 		
 		
-		driver.findElement(By.xpath("//button[normalize-space()='CONFIRM THIS BOOKING']")).click();
-		driver.findElement(By.xpath("//button[normalize-space()='Pay on Arrival']")).click();
-		driver.switchTo().alert().accept();
+//		js.executeScript("window.scrollBy(0,4500)");
+//		driver.findElement(By.xpath("//button[contains(text(),'Book Now')]")).click();	
+//		js.executeScript("window.scrollBy(0,500)");
+//		driver.findElement(By.xpath("//input[@name='firstname']")).sendKeys("Mohammad");
+//		driver.findElement(By.xpath("//input[@name='lastname']")).sendKeys("Islam");
+//		driver.findElement(By.xpath("//input[@name='email']")).sendKeys("mmislam020409@gmail.com");
+//		driver.findElement(By.xpath("//input[@name='confirmemail']")).sendKeys("mmislam020409@gmail.com");
+//		driver.findElement(By.xpath("//input[@name='phone']")).sendKeys("01717237725");
+//		driver.findElement(By.xpath("//input[@name='address']")).sendKeys("Adress");
+//		driver.findElement(By.xpath("//span[text()='Select Country']")).click();
+//		driver.findElement(By.xpath("//input[@class='chosen-search-input']")).sendKeys("Ban");
+//		driver.findElement(By.xpath("//input[@class='chosen-search-input']")).sendKeys(Keys.ENTER);
 		
-		
-		driver.findElement(By.xpath("//a[normalize-space()='My Account']")).click();//a[normalize-space()='Sign Up']
-		driver.findElement(By.xpath("//a[normalize-space()='Sign Up']")).click();
-		
-		driver.findElement(By.xpath("//span[normalize-space()='First Name']")).sendKeys("Mohammad");
-		driver.findElement(By.xpath("//span[normalize-space()='Last Name']")).sendKeys("Islam");
-		driver.findElement(By.xpath("//span[normalize-space()='Mobile Number']")).sendKeys("01717237725");
-		driver.findElement(By.xpath("//span[normalize-space()='Email']")).sendKeys("mmislam020409@gmai.com");
-		driver.findElement(By.xpath("//span[normalize-space()='Password']")).sendKeys("pw");
-		driver.findElement(By.xpath("//span[normalize-space()='Confirm Password']")).sendKeys("pw");
-		driver.findElement(By.xpath("//button[normalize-space()='Sign Up']")).click();
-		
-		driver.findElement(By.xpath("//input[@id='exampleInputEmail1']")).sendKeys("m@m.com");
-		driver.findElement(By.xpath("//button[normalize-space()='Subscribe']")).click();
+	    
+//		driver.findElement(By.xpath("//*[contains(text(),'Guest 1 Name')]")).sendKeys("guest1name");
+//		driver.findElement(By.name("passport[1][passportnumber]")).sendKeys("pass 1");
+//		driver.findElement(By.name("passport[1][age]")).sendKeys("35");
+//		driver.findElement(By.xpath("//*[contains(text(),'Guest 2 Name')]")).sendKeys("guest2name");
+//		driver.findElement(By.name("passport[1][passportnumber]")).sendKeys("pass 2");
+//		driver.findElement(By.name("passport[1][age]")).sendKeys("25");
 
+	    
+//		js.executeScript("window.scrollBy(0,1500)");
+//		driver.findElement(By.xpath("//button[text()='CONFIRM THIS BOOKING']")).click();
+		
+	    
+//	    driver.findElement(By.xpath("//button[text()='Pay on Arrival']")).click();
+//		Thread.sleep(2000);
+//		driver.switchTo().alert().accept();
+//		Thread.sleep(2000);
+	    
+	    
+//		driver.findElement(By.xpath("//a[text()=' My Account                  ']")).click();
+//		Thread.sleep(2000);
+//		driver.findElement(By.linkText("Sign Up")).click();
+//		Thread.sleep(2000);
+//		js.executeScript("window.scrollBy(0,200)");
+//		driver.findElement(By.xpath("//input[@name='firstname']")).sendKeys("Mohammad");
+//		driver.findElement(By.xpath("//input[@name='lastname']")).sendKeys("Islam");
+//		driver.findElement(By.xpath("//input[@name='phone']")).sendKeys("01717237725");
+//		driver.findElement(By.xpath("//input[@name='email']")).sendKeys("mmislam020409@gmail.com");
+//		driver.findElement(By.xpath("//input[@name='password']")).sendKeys("rNfza6DhywfGHsq");
+//		driver.findElement(By.xpath("//input[@name='confirmpassword']")).sendKeys("rNfza6DhywfGHsq");
+//		driver.findElement(By.xpath("//button[contains(text(),'Sign Up')]")).click();
+//		driver.findElement(By.xpath("//input[@id='exampleInputEmail1']")).sendKeys("m@m.com");
+//		driver.findElement(By.xpath("//button[normalize-space()='Subscribe']")).click();
 
-		
-		
 		
 	}
 }
